@@ -2,6 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import MobileContainer from "@/components/MobileContainer";
 import logo from "@/assets/logo.png";
+import gif from "@/assets/my-animation.gif";
+
+
 
 const Index = () => {
   const navigate = useNavigate();
@@ -13,27 +16,22 @@ const Index = () => {
           <img 
             src={logo} 
             alt="AirAware Logo" 
-            className="w-56 h-56 object-contain animate-fade-in cursor-pointer active:scale-95 transition-transform duration-300"
+            className="w-120 h-120 object-contain animate-fade-in cursor-pointer active:scale-95 transition-transform duration-300"
             onClick={() => navigate("/menu")}
           />
           
-          <div className="text-center space-y-3">
-            <h1 className="text-5xl font-bold text-primary tracking-tight">
-              AirAware
-            </h1>
-            <p className="text-xl text-muted-foreground font-light">
-              Breathe smarter. Live better.
-            </p>
-          </div>
+        
 
           <Button 
             onClick={() => navigate("/menu")}
             size="lg"
-            className="w-full mt-8 h-14 text-lg font-medium shadow-soft active:scale-95 transition-all duration-150"
+            className="w-36 mt-8 h-14 text-lg font-medium shadow-soft active:scale-95 transition-all duration-150"
           >
             Start
           </Button>
         </div>
+
+        
       </div>
     </MobileContainer>
   );

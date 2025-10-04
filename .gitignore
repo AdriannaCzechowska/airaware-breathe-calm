@@ -1,24 +1,97 @@
-# Logs
-logs
+# ==========================================
+# 📦 Node / Build artifacts
+# ==========================================
+node_modules/
+dist/
+dist-ssr/
+build/
+.vite/
+*.tsbuildinfo
+*.local
+
+# ==========================================
+# 🧩 Environment & Config files
+# ==========================================
+.env
+.env.*
+!.env.example
+firebase-debug.log*
+firebase-debug.*
+
+# ==========================================
+# 🪟 OS-generated files
+# ==========================================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ==========================================
+# 🧠 IDE / Editor specific
+# ==========================================
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.iml
+
+# ==========================================
+# 🧹 Logs & Temp files
+# ==========================================
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+*.tmp
+*.bak
+*.cache/
+.cache/
+*.lock
 
-node_modules
-dist
-dist-ssr
-*.local
+# ==========================================
+# 🧰 Miscellaneous
+# ==========================================
+*.pid
+*.seed
+*.pid.lock
+coverage/
+temp/
+tmp/
+__pycache__/  # (jeśli masz jakiś skrypt Pythona)
+*.sqlite3
+*.db
+*.orig
+*.rej
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# ==========================================
+# ⚙️ Tooling (optional)
+# ==========================================
+.eslintcache
+stylelintcache/
+.prettier_cache/
+.npm/
+.pnp.*
+.yarn-integrity
+.yarn/
+.yarnrc.yml
+
+# ==========================================
+# 🧩 Expo / React Native / Firebase (opcjonalnie)
+# ==========================================
+.expo/
+.expo-shared/
+.firebase/
+android/
+ios/
+*.keystore
+*.jks
+*.p8
+*.p12
+*.key

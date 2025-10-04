@@ -1,137 +1,152 @@
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { ArrowLeft, Play, Pause, Moon, Music2 } from "lucide-react";
-import AirQualityWidget from "@/components/AirQualityWidget";
 import MobileContainer from "@/components/MobileContainer";
+import { ArrowLeft, Play, Pause, Moon } from "lucide-react";
 
-const Sleep = () => {
+type Phase = {
+  label: "Inhale" | "Hold" | "Exhale";
+  duration: number; // seconds
+  scale: number; // 1 = base size
+  color: string; // circle color
+};
+
+export default function Sleep() {
   const navigate = useNavigate();
   const [isBreathing, setIsBreathing] = useState(false);
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const [phaseIdx, setPhaseIdx] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const timerRef = useRef<number | null>(null);
+  const countdownRef = useRef<number | null>(null);
+
+  const phases = useMemo<Phase[]>(
+    () => [
+      { label: "Inhale", duration: 4, scale: 1.2, color: "#7aa2ff" },
+      { label: "Hold", duration: 7, scale: 1.2, color: "#9aa6ff" },
+      { label: "Exhale", duration: 8, scale: 0.8, color: "#3b3f5c" },
+    ],
+    []
+  );
+
+  const current = phases[phaseIdx];
+
+  useEffect(() => {
+    if (!isBreathing) {
+      if (timerRef.current) window.clearTimeout(timerRef.current);
+      if (countdownRef.current) window.clearInterval(countdownRef.current);
+      timerRef.current = null;
+      countdownRef.current = null;
+      return;
+    }
+
+    setTimeLeft(current.duration);
+
+    // countdown every second
+    countdownRef.current = window.setInterval(() => {
+      setTimeLeft((t) => (t > 1 ? t - 1 : 0));
+    }, 1000) as unknown as number;
+
+    // move to the next phase
+    timerRef.current = window.setTimeout(() => {
+      const next = (phaseIdx + 1) % phases.length;
+      setPhaseIdx(next);
+    }, current.duration * 1000) as unknown as number;
+
+    return () => {
+      if (timerRef.current) window.clearTimeout(timerRef.current);
+      if (countdownRef.current) window.clearInterval(countdownRef.current);
+    };
+  }, [isBreathing, phaseIdx, current.duration, phases.length]);
 
   return (
     <MobileContainer>
-      <div className="h-full bg-gradient-hero px-6 py-8 animate-fade-in overflow-y-auto">
-        <div className="space-y-6 pb-6">
+      <div className="h-full px-6 py-8 overflow-y-auto text-white bg-gradient-to-b from-[#050505] via-[#0c0f1a] to-[#1a1f2f]">
         <Button
           variant="ghost"
           onClick={() => navigate("/menu")}
-          className="mb-4"
+          className="mb-6 text-gray-300 hover:text-white"
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Menu
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Menu
         </Button>
 
-        <AirQualityWidget />
+        <div className="flex items-center gap-3 mb-2">
+          <Moon className="h-5 w-5 text-indigo-300" />
+          <h1 className="text-2xl font-semibold">4-7-8 Breathing</h1>
+        </div>
+        <p className="text-gray-300 mb-6">Inhale 4s • Hold 7s • Exhale 8s</p>
 
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-foreground">
-            Better Sleep
-          </h1>
-          <p className="text-muted-foreground">
-            Wind down and prepare for rest
-          </p>
+        {/* 🔵 Animated circle */}
+        <div className="relative mx-auto w-56 h-56">
+          <div
+            className="absolute inset-0 rounded-full ring-1 ring-white/20 backdrop-blur-sm transition-all ease-in-out"
+            style={{
+              transform: `scale(${current.scale})`,
+              backgroundColor: current.color,
+              transitionDuration: `${current.duration}s`,
+              boxShadow:
+                current.label === "Inhale"
+                  ? "0 0 40px rgba(255,255,255,0.25)"
+                  : current.label === "Exhale"
+                  ? "inset 0 0 60px rgba(0,0,0,0.25)"
+                  : "0 0 24px rgba(255,255,255,0.15)",
+            }}
+          />
+          <div className="absolute -inset-3 rounded-full bg-white/10 pointer-events-none" />
         </div>
 
-        <Card className="p-8 bg-card border-0 shadow-soft">
-          <div className="flex flex-col items-center space-y-6">
-            <div className="bg-secondary/10 p-6 rounded-full">
-              <Moon className="w-16 h-16 text-secondary" />
-            </div>
-
-            <div className="text-center space-y-2">
-              <h3 className="font-semibold text-foreground text-lg">
-                4-7-8 Breathing Technique
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                A natural tranquilizer for the nervous system
-              </p>
-            </div>
-
-            <div className={`text-center ${isBreathing ? "animate-pulse-soft" : ""}`}>
-              <div className="text-4xl font-bold text-primary mb-2">
-                {isBreathing ? "Breathe" : "Ready"}
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Inhale 4s • Hold 7s • Exhale 8s
-              </p>
-            </div>
-
-            <Button
-              onClick={() => setIsBreathing(!isBreathing)}
-              size="lg"
-              className="w-full"
-            >
-              {isBreathing ? (
-                <>
-                  <Pause className="mr-2 h-4 w-4" />
-                  Stop Exercise
-                </>
-              ) : (
-                <>
-                  <Play className="mr-2 h-4 w-4" />
-                  Start Wind-Down
-                </>
-              )}
-            </Button>
+        {/* 🕒 Phase label + timer */}
+        <div className="mt-6 text-center">
+          <div className="text-sm uppercase tracking-wider text-indigo-200/90">
+            {current.label}
           </div>
-        </Card>
-
-        <Card className="p-6 bg-card border-0 shadow-card space-y-4">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="bg-primary/10 p-3 rounded-xl">
-              <Music2 className="w-5 h-5 text-primary" />
-            </div>
-            <h3 className="font-semibold text-foreground text-lg">
-              Sleep Sounds
-            </h3>
+          <div className="text-5xl font-semibold tabular-nums my-2">
+            {timeLeft}s
           </div>
-
-          <div className="space-y-3">
-            {[
-              { name: "Rain & Thunder", duration: "45 min" },
-              { name: "Ocean Waves", duration: "60 min" },
-              { name: "Forest Night", duration: "30 min" }
-            ].map((sound) => (
-              <div
-                key={sound.name}
-                className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-              >
-                <div>
-                  <p className="font-medium text-foreground">{sound.name}</p>
-                  <p className="text-xs text-muted-foreground">{sound.duration}</p>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsMusicPlaying(!isMusicPlaying)}
-                >
-                  {isMusicPlaying ? (
-                    <Pause className="h-4 w-4" />
-                  ) : (
-                    <Play className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
-            ))}
+          <div className="text-gray-300 text-sm">
+            {current.label === "Inhale"
+              ? "Inhale through your nose – slow and quiet"
+              : current.label === "Hold"
+              ? "Hold your breath – relax your body"
+              : "Exhale through your mouth – gentle whoosh sound"}
           </div>
-        </Card>
+        </div>
 
-        <Card className="p-6 bg-accent border-0">
-          <h3 className="font-semibold text-accent-foreground mb-2">
-            Sleep Tip
-          </h3>
-          <p className="text-sm text-accent-foreground/80">
-            The 4-7-8 technique helps slow your heart rate and promotes relaxation. 
-            Practice this technique lying in bed for best results.
+        {/* ▶️ Control buttons */}
+        <div className="mt-8 flex justify-center">
+          <Button
+            onClick={() => {
+              setIsBreathing((v) => !v);
+              if (!isBreathing) {
+                setPhaseIdx(0);
+                setTimeLeft(phases[0].duration);
+              }
+            }}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6"
+          >
+            {isBreathing ? (
+              <Pause className="mr-2 h-4 w-4" />
+            ) : (
+              <Play className="mr-2 h-4 w-4" />
+            )}
+            {isBreathing ? "Pause" : "Start"}
+          </Button>
+        </div>
+
+        {/* 💬 How it works */}
+        <div className="mt-10 bg-black/30 ring-1 ring-white/10 rounded-2xl p-4">
+          <h2 className="text-lg font-semibold mb-2">How it works</h2>
+          <p className="text-gray-300">
+            The 4-7-8 breathing technique activates the parasympathetic nervous
+            system and slows down your heart rate. The short 4-second inhale,
+            followed by a 7-second hold and an extended 8-second exhale, helps
+            lower cortisol levels and prepare your body for sleep.
           </p>
-        </Card>
         </div>
       </div>
     </MobileContainer>
   );
-};
+}
 
-export default Sleep;
+
+
+
