@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Play, Pause, Moon, Music2 } from "lucide-react";
 import AirQualityWidget from "@/components/AirQualityWidget";
+import MobileContainer from "@/components/MobileContainer";
 
 const Sleep = () => {
   const navigate = useNavigate();
@@ -11,8 +12,9 @@ const Sleep = () => {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-hero px-6 py-8 animate-fade-in">
-      <div className="max-w-md mx-auto space-y-6">
+    <MobileContainer>
+      <div className="h-full bg-gradient-hero px-6 py-8 animate-fade-in overflow-y-auto">
+        <div className="space-y-6 pb-6">
         <Button
           variant="ghost"
           onClick={() => navigate("/menu")}
@@ -126,8 +128,9 @@ const Sleep = () => {
             Practice this technique lying in bed for best results.
           </p>
         </Card>
+        </div>
       </div>
-    </div>
+    </MobileContainer>
   );
 };
 

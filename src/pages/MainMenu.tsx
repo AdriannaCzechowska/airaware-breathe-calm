@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Brain, Leaf, Moon, Target } from "lucide-react";
+import MobileContainer from "@/components/MobileContainer";
 
 const MainMenu = () => {
   const navigate = useNavigate();
@@ -37,8 +38,9 @@ const MainMenu = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-hero px-6 py-12 animate-fade-in">
-      <div className="max-w-md mx-auto space-y-8">
+    <MobileContainer>
+      <div className="h-full bg-gradient-hero px-6 py-12 animate-fade-in">
+        <div className="space-y-8">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold text-foreground">
             What would you like to do today?
@@ -52,7 +54,7 @@ const MainMenu = () => {
               <Card
                 key={item.title}
                 onClick={() => navigate(item.path)}
-                className="p-6 cursor-pointer hover:shadow-soft transition-all duration-300 hover:scale-[1.02] bg-card border-0 shadow-card"
+                className="p-6 cursor-pointer active:scale-95 transition-all duration-150 bg-card border-0 shadow-card"
               >
                 <div className="flex items-center space-x-4">
                   <div className={`${item.bgColor} p-4 rounded-2xl`}>
@@ -66,8 +68,9 @@ const MainMenu = () => {
             );
           })}
         </div>
+        </div>
       </div>
-    </div>
+    </MobileContainer>
   );
 };
 

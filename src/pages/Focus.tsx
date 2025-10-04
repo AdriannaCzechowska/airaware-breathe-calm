@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Play, Pause, Timer, Music, Headphones } from "lucide-react";
 import AirQualityWidget from "@/components/AirQualityWidget";
+import MobileContainer from "@/components/MobileContainer";
 
 const Focus = () => {
   const navigate = useNavigate();
@@ -12,8 +13,9 @@ const Focus = () => {
   const [minutes, setMinutes] = useState(25);
 
   return (
-    <div className="min-h-screen bg-gradient-hero px-6 py-8 animate-fade-in">
-      <div className="max-w-md mx-auto space-y-6">
+    <MobileContainer>
+      <div className="h-full bg-gradient-hero px-6 py-8 animate-fade-in overflow-y-auto">
+        <div className="space-y-6 pb-6">
         <Button
           variant="ghost"
           onClick={() => navigate("/menu")}
@@ -175,8 +177,9 @@ const Focus = () => {
             </Button>
           </div>
         </Card>
+        </div>
       </div>
-    </div>
+    </MobileContainer>
   );
 };
 
