@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Play, Pause, Timer, Music, Headphones } from "lucide-react";
 import MobileContainer from "@/components/MobileContainer";
+import focusGif from "@/assets/my-animation-focus.gif"; // ← GIF mops
 
 type Phase = {
   label: "Inhale" | "Hold" | "Exhale";
@@ -22,9 +23,9 @@ const Focus = () => {
   const phases = useMemo<Phase[]>(
     () => [
       { label: "Inhale", duration: 4, edge: 0, color: "#3b82f6", hint: "Inhale through your nose" },
-      { label: "Hold",   duration: 4, edge: 1, color: "#60a5fa", hint: "Hold – keep shoulders relaxed" },
+      { label: "Hold", duration: 4, edge: 1, color: "#60a5fa", hint: "Hold – keep shoulders relaxed" },
       { label: "Exhale", duration: 4, edge: 2, color: "#2563eb", hint: "Exhale gently through mouth" },
-      { label: "Hold",   duration: 4, edge: 3, color: "#93c5fd", hint: "Hold – stay calm" },
+      { label: "Hold", duration: 4, edge: 3, color: "#93c5fd", hint: "Hold – stay calm" },
     ],
     []
   );
@@ -41,16 +42,22 @@ const Focus = () => {
   const current = phases[phaseIdx];
 
   // Square geometry
-  const size = 220; // 
+  const size = 220;
   const pad = 24;
-  const left = pad, top = pad, right = size - pad, bottom = size - pad;
-  const s0: Point = { x: left,  y: top };
+  const left = pad,
+    top = pad,
+    right = size - pad,
+    bottom = size - pad;
+  const s0: Point = { x: left, y: top };
   const s1: Point = { x: right, y: top };
   const s2: Point = { x: right, y: bottom };
-  const s3: Point = { x: left,  y: bottom };
+  const s3: Point = { x: left, y: bottom };
 
   const edges: [Point, Point][] = [
-    [s0, s1], [s1, s2], [s2, s3], [s3, s0],
+    [s0, s1],
+    [s1, s2],
+    [s2, s3],
+    [s3, s0],
   ];
 
   const [a, b] = edges[current.edge];
@@ -107,7 +114,6 @@ const Focus = () => {
   const [pomodoroSeconds, setPomodoroSeconds] = useState(minutes * 60);
   const pomodoroIntervalRef = useRef<number | null>(null);
 
-  // mm:ss
   const fmt = (total: number) => {
     const m = Math.floor(total / 60);
     const s = total % 60;
@@ -116,7 +122,6 @@ const Focus = () => {
     return `${mm}:${ss}`;
   };
 
-  // Start/stop interval
   useEffect(() => {
     if (!isPomodoroActive) {
       if (pomodoroIntervalRef.current) {
@@ -147,14 +152,12 @@ const Focus = () => {
     };
   }, [isPomodoroActive]);
 
-  
   const setPreset = (m: number) => {
     setIsPomodoroActive(false);
     setMinutes(m);
     setPomodoroSeconds(m * 60);
   };
 
-  
   useEffect(() => {
     setPomodoroSeconds(minutes * 60);
   }, [minutes]);
@@ -185,7 +188,6 @@ const Focus = () => {
                 <p className="text-sm text-muted-foreground">Equal breath for mental clarity</p>
               </div>
 
-              {/* Kwadrat z kropką + licznik w środku */}
               <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
                 <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} className="absolute top-0 left-0">
                   <rect
@@ -294,56 +296,73 @@ const Focus = () => {
             </div>
           </Card>
 
-          {/* Pomodoro Timer */}
-          <Card className="p-6 bg-card border-0 shadow-card">
-            <div className="flex flex-col items-center space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="bg-primary/10 p-3 rounded-xl">
-                  <Timer className="w-5 h-5 text-primary shrink-0" />
+          {/* === GIF + Pomodoro razem, powiększony i dosunięty === */}
+          <div className="flex flex-col items-center -mt-12">
+            <img
+              src={focusGif}
+              alt="Focus animation"
+              className="block w-80 sm:w-96 md:w-[28rem] lg:w-[32rem] object-contain mb-0 -mb-px"
+            />
+
+            <Card className="p-6 bg-card border-0 shadow-card w-full rounded-t-none">
+              <div className="flex flex-col items-center space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary/10 p-3 rounded-xl">
+                    <Timer className="w-5 h-5 text-primary shrink-0" />
+                  </div>
+                  <h3 className="font-semibold text-foreground text-lg">Pomodoro Timer</h3>
                 </div>
-                <h3 className="font-semibold text-foreground text-lg">Pomodoro Timer</h3>
-              </div>
 
-              <div className="text-center">
-                <div className="text-5xl font-bold text-primary mb-2">
-                  {fmt(pomodoroSeconds)}
+                <div className="text-center">
+                  <div className="text-5xl font-bold text-primary mb-2">
+                    {fmt(pomodoroSeconds)}
+                  </div>
+                  <p className="text-sm text-muted-foreground">Work session</p>
                 </div>
-                <p className="text-sm text-muted-foreground">Work session</p>
-              </div>
 
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => setPreset(25)}>25 min</Button>
-                <Button variant="outline" size="sm" onClick={() => setPreset(15)}>15 min</Button>
-                <Button variant="outline" size="sm" onClick={() => setPreset(5)}>5 min</Button>
-              </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={() => setPreset(25)}>
+                    25 min
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => setPreset(15)}>
+                    15 min
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => setPreset(5)}>
+                    5 min
+                  </Button>
+                </div>
 
-              <div className="flex gap-2 w-full">
-                <Button
-                  onClick={() => setIsPomodoroActive((v) => !v)}
-                  className="flex-1 inline-flex items-center justify-center gap-2"
-                >
-                  {isPomodoroActive ? (
-                    <>
-                      <Pause className="h-4 w-4 shrink-0" />
-                      <span>Pause</span>
-                    </>
-                  ) : (
-                    <>
-                      <Play className="h-4 w-4 shrink-0" />
-                      <span>Start</span>
-                    </>
-                  )}
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => { setIsPomodoroActive(false); setPomodoroSeconds(minutes * 60); }}
-                  className="flex-1"
-                >
-                  Reset
-                </Button>
+                <div className="flex gap-2 w-full">
+                  <Button
+                    onClick={() => setIsPomodoroActive((v) => !v)}
+                    className="flex-1 inline-flex items-center justify-center gap-2"
+                  >
+                    {isPomodoroActive ? (
+                      <>
+                        <Pause className="h-4 w-4 shrink-0" />
+                        <span>Pause</span>
+                      </>
+                    ) : (
+                      <>
+                        <Play className="h-4 w-4 shrink-0" />
+                        <span>Start</span>
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsPomodoroActive(false);
+                      setPomodoroSeconds(minutes * 60);
+                    }}
+                    className="flex-1"
+                  >
+                    Reset
+                  </Button>
+                </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+          </div>
         </div>
       </div>
     </MobileContainer>
@@ -351,5 +370,3 @@ const Focus = () => {
 };
 
 export default Focus;
-
-
