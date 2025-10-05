@@ -116,7 +116,7 @@ const StressManagement = () => {
 
   return (
     <MobileContainer>
-      <div className="h-full bg-gradient-hero px-6 py-8 animate-fade-in overflow-y-auto">
+      <div className="h-full bg-gradient-hero px-6 py-10 animate-fade-in overflow-y-auto">
         <div className="space-y-6 pb-6">
           <Button
             variant="ghost"
@@ -134,14 +134,14 @@ const StressManagement = () => {
             </p>
           </div>
 
-          <Card className="p-8 bg-card border-0 shadow-soft">
-            <div className="flex flex-col items-center space-y-6">
+          <Card className="p-11 bg-card border-0 shadow-soft">
+            <div className="flex flex-col items-center space-y-20">
               {/* TRIANGLE + MOVING DOT */}
               <div className="relative" style={{ width: size, height: size }}>
                 <svg
                   viewBox={`0 0 ${size} ${size}`}
                   width={size}
-                  height={size}
+                  height={200}
                   className="block"
                 >
                   {/* soft glow ring */}
@@ -191,39 +191,41 @@ const StressManagement = () => {
               </div>
 
               {/* controls */}
-              <Button
-                onClick={() => {
-                  const nextState = !isBreathing;
-                  setIsBreathing(nextState);
-                  if (nextState) {
-                    // starting fresh from Inhale
-                    setPhaseIdx(0);
-                    setTimeLeft(phases[0].duration);
-                    setEdgeProgress(0);
-                  } else {
-                    // pause everything precisely where it is
-                    stopAllTimers();
-                  }
-                }}
-                size="lg"
-                className="w-full"
-              >
-                {isBreathing ? (
-                  <>
-                    <Pause className="mr-2 h-4 w-4" />
-                    Pause Exercise
-                  </>
-                ) : (
-                  <>
-                    <Play className="mr-2 h-4 w-4" />
-                    Start Breathing
-                  </>
-                )}
-              </Button>
+              <div className="w-full mt- mb-4">
+                <Button
+                  onClick={() => {
+                    const nextState = !isBreathing;
+                    setIsBreathing(nextState);
+                    if (nextState) {
+                      // starting fresh from Inhale
+                      setPhaseIdx(0);
+                      setTimeLeft(phases[0].duration);
+                      setEdgeProgress(0);
+                    } else {
+                      // pause everything precisely where it is
+                      stopAllTimers();
+                    }
+                  }}
+                  size="lg"
+                  className="w-full py-6"
+                >
+                  {isBreathing ? (
+                    <>
+                      <Pause className="mr-2 h-4 w-4" />
+                      Pause Exercise
+                    </>
+                  ) : (
+                    <>
+                      <Play className="mr-2 h-2 w-4" />
+                      Start Breathing
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </Card>
 
-            {/* Music card */}
+          {/* Music card */}
           <Card className="p-6 bg-card border-0 shadow-card">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -262,4 +264,3 @@ const StressManagement = () => {
 };
 
 export default StressManagement;
-
