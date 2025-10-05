@@ -206,7 +206,7 @@ const StressManagement = () => {
           </Card>
 
           {/* === GIF (mocno przesunięty w górę) === */}
-          <div className="flex justify-center" style={{ marginTop: "-120px" }}>
+          <div className="flex justify-center pointer-events-none" style={{ marginTop: "-120px" }}>
             <img
               src={stressGif}
               alt="Stress relief animation"
